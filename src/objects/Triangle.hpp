@@ -16,7 +16,7 @@ public:
     Triangle(double *vertex0, double *vertex1, double *vertex2, Material *material);
     void set_vertices(double *vertex0, double *vertex1, double *vertex2);
     Point *operator[](int i);
-    void uv(Point &p_int, double &u, double &v) override{};
+
     Vector surface_normal(Point &p_int) override;
     bool intersects(Ray &ray, double &t_int) override;
     void translate(Matrix t_matrix) override;

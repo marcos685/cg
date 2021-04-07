@@ -6,11 +6,13 @@ using std::pow;
 Shape::Shape()
 {
     this->material_ = new Material();
+    this->name = "shape";
 }
 
 Shape::Shape(Material *material)
 {
     this->material_ = material;
+    this->name = "shape";
 };
 
 Material *Shape::get_material() { return material_; }
@@ -48,9 +50,6 @@ Color Shape::calculate_diffuse(Light *light, Point &intersection)
 
     double fd = normal.dot_product(&ld);
     fd = fd < 0 ? 0 : fd;
-
-    double u, v;
-    this->uv(intersection, u, v);
 
     Color Id = intensity * material_->diffuse * fd;
     return Id;

@@ -1,5 +1,6 @@
 #include "Bounding_Box.hpp"
 #include <cmath>
+#include <algorithm>
 
 using std::swap;
 

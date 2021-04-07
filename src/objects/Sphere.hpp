@@ -21,7 +21,6 @@ public:
     void translate(Matrix t_matrix) override;
     void rotate(Matrix t_matrix) override;
     void scale(Matrix t_matrix) override;
-    void uv(Point &p_int, double &u, double &v) override;
     virtual Sphere *clone() const { return new Sphere(*this); }
 };
 

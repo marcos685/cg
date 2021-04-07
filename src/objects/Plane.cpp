@@ -43,3 +43,8 @@ void Plane::rotate(Matrix t_matrix)
     n_ = t_matrix * n_;
     n_.normalize();
 }
+
+void Plane::scale(Matrix t_matrix)
+{
+    return;
+}

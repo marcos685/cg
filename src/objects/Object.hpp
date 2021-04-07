@@ -13,7 +13,6 @@ private:
     std::vector<Shape *> mesh_;
     Point pivot;
     bool visible_;
-    void load_obj(const char *obj_path, Material *material, Point &c_min, Point &c_max, bool first_time = false);
 
 public:
     const char *name;
@@ -25,10 +24,10 @@ public:
     void set_visible(bool visible);
     bool visible();
     bool *visible_ptr();
-    bool trace(Ray &ray, Shape *shape_hit, double &t_int);
+    bool trace(Ray &ray, Shape **shape_hit, double &t_int);
     void translate(Vector t_vec);
-    void scale(float sx, float sy, float sz);
-    void rotate(float angle, Vector axis);
+    void scale(double sx, double sy, double sz);
+    void rotate(double angle, Vector axis);
 };
 
 #endif

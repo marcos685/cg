@@ -21,7 +21,6 @@ public:
     double *get_radius();
     double *get_height();
     void set_params(Point *b, Vector *u, double *height, double *radius);
-    void uv(Point &p_int, double &u, double &v) override{};
     Vector surface_normal(Point &p_int) override;
     bool intersects(Ray &ray, double &t_int) override;
     void translate(Matrix t_matrix) override;

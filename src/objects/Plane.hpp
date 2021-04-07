@@ -14,7 +14,7 @@ public:
     Point get_p0();
     Vector get_n();
     void set_params(Point *p0, Vector *n);
-    void uv(Point &p_int, double &u, double &v) override{};
+
     Vector surface_normal(Point &p_int) override { return n_; };
     bool intersects(Ray &ray, double &t_int) override;
     void translate(Matrix t_matrix) override;

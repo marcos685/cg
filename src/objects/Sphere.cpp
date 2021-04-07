@@ -59,13 +59,7 @@ void Sphere::scale(Matrix t_matrix)
     radius_ *= t_matrix(0, 0);
 }
 
-void Sphere::uv(Point &p_int, double &u, double &v)
+void Sphere::rotate(Matrix t_matrix)
 {
-    Vector n = Vector(&center_, &p_int);
-    n.normalize();
-
-    double phi = std::atan2(n.get_z(), n.get_x());
-    double theta = std::asin(n.get_y());
-    u = 1 - (phi + M_PI) / (2 * M_PI);
-    v = (theta + M_PI_2) / M_PI;
+    return;
 }

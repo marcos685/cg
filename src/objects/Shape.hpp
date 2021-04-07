@@ -17,9 +17,9 @@ public:
     Shape();
     Shape(Material *material);
     Material *get_material();
+    const char *name;
     Vector light_direction(Light *light, Point &intersection);
     Color calculate_color(Light *light, Point &observer, Point &intersection);
-    virtual void uv(Point &p_int, double &u, double &v) = 0;
     virtual Vector surface_normal(Point &p_int) = 0;
     virtual bool intersects(Ray &ray, double &t_int) = 0;
     virtual void translate(Matrix t_matrix) = 0;

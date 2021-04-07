@@ -1,5 +1,6 @@
 #include <limits>
 #include <cmath>
+#include <iostream>
 
 #include "Object.hpp"
 #include "Triangle.hpp"
@@ -19,7 +20,6 @@ Object::Object(const char *name, const char *obj_path, Material *material, bool 
     this->visible_ = visible;
     Point minb;
     Point maxb;
-    this->load_obj(obj_path, material, minb, maxb, true);
     this->bounding_box_ = Bounding_Box(minb, maxb);
 }
 
@@ -37,33 +37,33 @@ Object *Object::clone(const char *n_name)
         return new Object(name, bounding_box_, mesh_, visible_);
 }
 
-void Object::include(const char *obj_path, Material *material)
-{
-    Point c_min, c_max;
-    bounding_box_.bounds(c_min, c_max);
-    this->load_obj(obj_path, material, c_min, c_max);
-    this->bounding_box_.set_bounds(c_min, c_max);
-}
-
 void Object::set_visible(bool visible) { visible_ = visible; }
 bool Object::visible() { return visible_; }
 bool *Object::visible_ptr() { return &visible_; }
 
-bool Object::trace(Ray &ray, Shape *shape_hit, double &t_int)
+bool Object::trace(Ray &ray, Shape **shape_hit, double &t_int)
 {
     double t_min = std::numeric_limits<double>::infinity();
     bool hit = false;
 
     if (!visible_ || !bounding_box_.intersects(ray, t_int))
+    {
         return hit;
+    }
 
     for (unsigned i = 0; i < mesh_.size(); i++)
     {
+
         if (mesh_[i]->intersects(ray, t_int) && t_int >= 0 && t_int < t_min)
         {
             t_min = t_int;
-            shape_hit = mesh_[i];
-            intersection.tint = t_int;
+            *shape_hit = mesh_[i];
+            std::cout << "mesh here" << '\n';
+            std::cout << mesh_[i] << '\n';
+            std::cout << "here" << '\n';
+            std::cout << "shape here" << '\n';
+            std::cout << shape_hit << '\n';
+            std::cout << "here" << '\n';
             hit = true;
         }
     }
@@ -82,7 +82,7 @@ void Object::translate(Vector t_vec)
         mesh_[i]->translate(translation_m);
 }
 
-void Object::scale(float sx, float sy, float sz)
+void Object::scale(double sx, double sy, double sz)
 {
     Matrix scale_m;
     scale_m(0, 0) = sx;
@@ -94,7 +94,7 @@ void Object::scale(float sx, float sy, float sz)
         mesh_[i]->scale(scale_m);
 }
 
-void Object::rotate(float angle, Vector axis)
+void Object::rotate(double angle, Vector axis)
 {
     Point origin;
     Point ref = bounding_box_.get_ref();
@@ -108,8 +108,8 @@ void Object::rotate(float angle, Vector axis)
 
     angle /= 2;
     Vector qrv = axis * std::sin(angle);
-    float wq = std::cos(angle);
-    float vqx, vqy, vqz;
+    double wq = std::cos(angle);
+    double vqx, vqy, vqz;
     qrv.get_coordinates(&vqx, &vqy, &vqz);
 
     Matrix rotation_m;

@@ -1,6 +1,7 @@
 #include "Cylinder.hpp"
 #include <cmath>
 #include <vector>
+#include <iostream>
 
 using std::pow, std::sqrt, std::vector;
 
@@ -36,6 +37,8 @@ void Cylinder::set_params(Point *b, Vector *u, double *height, double *radius)
 
 Vector Cylinder::surface_normal(Point &p_int)
 {
+    std::cout << "hoi\n";
+
     Vector s1 = u_ * Vector(&b_, &p_int).dot_product(&u_);
     Point sp_int = Point(
         b_.get_x() + s1.get_x(),
@@ -48,8 +51,6 @@ Vector Cylinder::surface_normal(Point &p_int)
 
 bool Cylinder::intersects(Ray &ray, double &t_min)
 {
-    // v = (P0 - B) - ((P0 - B).u)u
-    // w = d - (d . u)u
     Point ray_p0 = ray.get_p0();
     Vector ray_d = ray.get_d();
 
@@ -63,10 +64,12 @@ bool Cylinder::intersects(Ray &ray, double &t_min)
     double a = w.dot_product(&w);
     double b = v.dot_product(&w);
     double c = v.dot_product(&v) - pow(radius_, 2);
-    double delta = pow(b, 2) - 4 * a * c;
-    if (delta < 0)
-        return false;
+    double delta = pow(b, 2) - a * c;
 
+    if (delta < 0)
+    {
+        return false;
+    }
     double t_int0 = (-b + sqrt(delta)) / 2 * a;
     double t_int1 = (-b - sqrt(delta)) / 2 * a;
 
@@ -116,6 +119,7 @@ bool Cylinder::intersects(Ray &ray, double &t_min)
         if (intersections[i] < t_min)
             t_min = intersections[i];
 
+    std::cout << (int)intersections.size() << '\n';
     return int_candidates >= 1;
 }
 
