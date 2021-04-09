@@ -29,6 +29,7 @@ Vector Sphere::surface_normal(Point &p_int)
 {
     Vector normal = Vector(&center_, &p_int);
     normal.normalize();
+    normal = normal / radius_;
     return normal;
 }
 
@@ -38,9 +39,9 @@ bool Sphere::intersects(Ray &ray, double &t_min)
     Vector ray_d = ray.get_d();
     Vector c_rp0 = Vector(&center_, &ray_p0);
     double a = ray_d.dot_product(&ray_d);
-    double b = 2 * c_rp0.dot_product(&ray_d);
+    double b = c_rp0.dot_product(&ray_d);
     double c = c_rp0.dot_product(&c_rp0) - pow(radius_, 2);
-    double delta = pow(b, 2) - 4 * a * c;
+    double delta = pow(b, 2) - a * c;
     if (delta < 0)
         return false;
     double t_int0 = (-b + sqrt(delta)) / a;

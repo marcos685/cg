@@ -79,11 +79,11 @@ bool Cone::intersects(Ray &ray, double &t_min)
     double a = pow(d.dot_product(&n_), 2) - (d.dot_product(&d) * cos_sqrd_theta);
     double b = (v.dot_product(&d) * cos_sqrd_theta) - (v.dot_product(&n_) * d.dot_product(&n_));
     double c = pow(v.dot_product(&n_), 2) - (v.dot_product(&v) * cos_sqrd_theta);
-    double delta = pow(b, 2) - 4 * a * c;
+    double delta = pow(b, 2) - a * c;
     if (delta < 0)
         return false;
-    double t_int0 = (-b + sqrt(delta)) / 2 * a;
-    double t_int1 = (-b - sqrt(delta)) / 2 * a;
+    double t_int0 = (-b + sqrt(delta)) / a;
+    double t_int1 = (-b - sqrt(delta)) / a;
     Point p1 = ray.calc_point(t_int0);
     Point p2 = ray.calc_point(t_int1);
     double p1_dotproduct = Vector(&p1, &vertice_).dot_product(&n_);

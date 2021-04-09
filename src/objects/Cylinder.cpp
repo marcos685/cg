@@ -37,7 +37,6 @@ void Cylinder::set_params(Point *b, Vector *u, double *height, double *radius)
 
 Vector Cylinder::surface_normal(Point &p_int)
 {
-    std::cout << "hoi\n";
 
     Vector s1 = u_ * Vector(&b_, &p_int).dot_product(&u_);
     Point sp_int = Point(
@@ -70,8 +69,8 @@ bool Cylinder::intersects(Ray &ray, double &t_min)
     {
         return false;
     }
-    double t_int0 = (-b + sqrt(delta)) / 2 * a;
-    double t_int1 = (-b - sqrt(delta)) / 2 * a;
+    double t_int0 = (-b + sqrt(delta)) / a;
+    double t_int1 = (-b - sqrt(delta)) / a;
 
     Point p1 = ray.calc_point(t_int0);
     Point p2 = ray.calc_point(t_int1);
@@ -119,7 +118,6 @@ bool Cylinder::intersects(Ray &ray, double &t_min)
         if (intersections[i] < t_min)
             t_min = intersections[i];
 
-    std::cout << (int)intersections.size() << '\n';
     return int_candidates >= 1;
 }
 

@@ -58,12 +58,7 @@ bool Object::trace(Ray &ray, Shape **shape_hit, double &t_int)
         {
             t_min = t_int;
             *shape_hit = mesh_[i];
-            std::cout << "mesh here" << '\n';
-            std::cout << mesh_[i] << '\n';
-            std::cout << "here" << '\n';
-            std::cout << "shape here" << '\n';
-            std::cout << shape_hit << '\n';
-            std::cout << "here" << '\n';
+
             hit = true;
         }
     }

@@ -2,6 +2,10 @@
 #include "./objects/Shape.hpp"
 #include "./objects/Object.hpp"
 #include "./objects/Bounding_Box.hpp"
+#include "./objects/Triangle.hpp"
+#include "./objects/Cone.hpp"
+#include "./objects/Sphere.hpp"
+#include "Intersection.hpp"
 
 #include <limits>
 #include <GL/freeglut.h>
@@ -27,9 +31,9 @@ int resolution = 500;
 double upscaling = 1.0f;
 GLubyte *PixelBuffer = new GLubyte[resolution * resolution * 3];
 
-static double observer[3] = {0.0f, 180.0f, 355.0f};
-static double lookat[3] = {300.0f, 160.0f, 0.0f};
-static double viewup[3] = {0.0f, 181.0f, 355.0f};
+static double observer[3] = {80.0f, 40.0f, 40.0f};
+static double lookat[3] = {1.0f, 1.0f, 1.0f};
+static double viewup[3] = {80.0f, 41.0f, 40.0f};
 
 double width = 6.0;
 double dist = 3.0;
@@ -37,7 +41,7 @@ double dist = 3.0;
 Camera *camera = new Camera(observer, lookat, viewup);
 
 //Ambient light
-Light *ambient_light = new Light(Color(0.2, 0.8, 0.2), Vector(), AMBIENT);
+Light *ambient_light = new Light(Color(0.5, 0.5, 0.5), Vector(), AMBIENT);
 
 vector<Light *> lights = {ambient_light};
 
@@ -73,9 +77,6 @@ Color trace_ray(int x, int y)
 
         if (objects[i]->trace(ray, &shape, t_int) && t_int < t_min)
         {
-            std::cout << "here" << '\n';
-            std::cout << shape << '\n';
-            std::cout << "here" << '\n';
             t_min = t_int;
             shape_hit = shape;
             object_index = i;
@@ -88,7 +89,6 @@ Color trace_ray(int x, int y)
         double episilon = 0.01;
 
         Point p_int = ray.calc_point(t_int);
-        std::cout << shape_hit->name << '\n';
         Vector surfc_normal = shape_hit->surface_normal(p_int);
 
         surfc_normal = surfc_normal * episilon;
@@ -201,13 +201,43 @@ int main(int argc, char **argv)
 {
     Object *red_cup = new Object(
         "Red cup",
-        Bounding_Box(Point(-30, 0, -30), Point(30, 150, 30)),
+        Bounding_Box(Point(-11, 0, -11), Point(11, 31, 11)),
         vector<Shape *>{
-            new Cylinder(Point(), Vector(), 15, 3, new Material(Color(0.4588, 0.1803, 0.1960), Color(0.6117, 0.1686, 0.2470), Color(0.5, 0.5, 0.5), 32))});
+            new Cylinder(Point(), Vector(0, 1, 0), 30, 10, new Material(Color(0.4588, 0.1803, 0.1960), Color(0.6117, 0.1686, 0.2470), Color(0.5, 0.5, 0.5), 32))});
 
-    red_cup->translate(Vector());
+    Point floor1 = Point();
+    Point floor2 = Point(200, 0, 0);
+    Point floor3 = Point(0, 0, 200);
+    Point floor4 = Point(200, 0, 200);
+    Object *floor = new Object(
+        "floor",
+        Bounding_Box(Point(), Point(200, 0, 200)),
+        vector<Shape *>{
+            new Triangle(floor1, floor2, floor3, new Material(Color(0.7, 0.7, 0.7), Color(0.72, 0.71, 0.73), Color(0.7, 0.69, 0.71), 32)),
+            new Triangle(floor4, floor2, floor3, new Material(Color(1, 1, 1), Color(1, 1, 1), Color(1, 1, 1), 32))});
+
+    Object *red_cone = new Object(
+        "Red cup",
+        Bounding_Box(Point(-11, 0, -11), Point(11, 31, 11)),
+        vector<Shape *>{
+            new Cone(Point(), Vector(0, 1, 0), 30, 10, new Material(Color(0.4588, 0.1803, 0.1960), Color(0.6117, 0.1686, 0.2470), Color(0.5, 0.5, 0.5), 32))});
+
+    Object *red_ball = new Object(
+        "Red cup",
+        Bounding_Box(Point(-10, -10, -10), Point(10, 10, 10)),
+        vector<Shape *>{
+            new Sphere(Point(), 10, new Material(Color(0.4588, 0.1803, 0.1960), Color(0.6117, 0.1686, 0.2470), Color(0.5, 0.5, 0.5), 32))});
+    red_cone->translate(Vector(0, 0, 20.0));
+    red_ball->translate(Vector(10.0, 20.0, 40.0));
 
     objects.push_back(red_cup);
+    objects.push_back(floor);
+    objects.push_back(red_cone);
+    objects.push_back(red_ball);
+
+    Light *p_light = new Light(Color(1, 1, 1), Vector(-10.0, 10.0, -10.0));
+
+    lights.push_back(p_light);
     // Negotiating window section
     glutInit(&argc, argv);
 
