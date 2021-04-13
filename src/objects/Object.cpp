@@ -123,8 +123,6 @@ void Object::rotate(double angle, Vector axis)
 
     rotation_m(3, 3) = 1;
 
-    std::cout << rotation_m;
-
     bounding_box_.origin_translate(to_origin);
     for (unsigned i = 0; i < mesh_.size(); i++)
         mesh_[i]->translate(to_origin);

@@ -27,14 +27,16 @@
 
 using namespace std;
 
-int resolution = 500;
+double w = 500;
+double h = 500;
+int buffer_size = floor(w * h * 3);
 double upscaling = 1.0f;
-double *unormalized_buffer = new double[resolution * resolution * 3];
-GLubyte *PixelBuffer = new GLubyte[resolution * resolution * 3];
+double *unormalized_buffer = new double[buffer_size];
+GLubyte *PixelBuffer = new GLubyte[buffer_size];
 
-static double observer[3] = {70.0f, 25.0f, 80.0f};
-static double lookat[3] = {40.0f, 5.0f, 5.0f};
-static double viewup[3] = {70.0f, 26.0f, 80.0f};
+static double observer[3] = {70.0f, 12.0f, 70.0f};
+static double lookat[3] = {35.0f, 5.0f, 5.0f};
+static double viewup[3] = {70.0f, 13.0f, 70.0f};
 
 double width = 6.0;
 double dist = 6.0;
@@ -43,7 +45,7 @@ Camera *camera = new Camera(observer, lookat, viewup);
 
 Color bg_color = Color(0.02, 0, 0.08);
 //Ambient light
-Light *ambient_light = new Light(Color(0.02, 0.0, 0.08), Vector(), AMBIENT);
+Light *ambient_light = new Light(Color(0.0, 0.0, 0.08), Vector(), AMBIENT);
 
 vector<Light *> lights = {ambient_light};
 
@@ -88,7 +90,7 @@ Material *darkwood_material = new Material(
 
 Color trace_ray(int x, int y)
 {
-    double pixel_width = width / resolution;
+    double pixel_width = width / w;
     Point observer = *(camera->get_eye());
 
     double x_pos = -width / 2 + pixel_width / 2 + x * pixel_width;
@@ -199,39 +201,39 @@ void raycasting()
             [&](const int start_i, const int end_i, const int t) {
                 for (int y = start_i; y < end_i; y++)
                 {
-                    for (int x = 0; x < resolution; x++)
+                    for (int x = 0; x < w; x++)
                     {
                         Color color = trace_ray(x, y);
-                        int y1 = resolution - 1 - y;
-                        int position = (x + y1 * resolution) * 3;
+                        int y1 = h - 1 - y;
+                        int position = (x + y1 * w) * 3;
                         unormalized_buffer[position] = color.r;
                         unormalized_buffer[position + 1] = color.g;
                         unormalized_buffer[position + 2] = color.b;
                     }
                 }
             },
-            t * resolution / nthreads, (t + 1) == nthreads ? resolution : (t + 1) * resolution / nthreads, t));
+            t * h / nthreads, (t + 1) == nthreads ? h : (t + 1) * h / nthreads, t));
     }
 
     for (size_t i = 0; i < nthreads; i++)
         threads[i].join();
 
     double max_intensity = 0;
-    for (int i = 0; i < resolution * resolution * 3; i++)
+    for (int i = 0; i < w * h * 3; i++)
     {
         if (unormalized_buffer[i] > 1 && unormalized_buffer[i] > max_intensity)
             max_intensity = unormalized_buffer[i];
     }
     if (max_intensity > 1)
     {
-        for (int i = 0; i < resolution * resolution * 3; i++)
+        for (int i = 0; i < w * h * 3; i++)
         {
             PixelBuffer[i] = floor((unormalized_buffer[i] / max_intensity) * 255);
         }
     }
     else
     {
-        for (int i = 0; i < resolution * resolution * 3; i++)
+        for (int i = 0; i < w * h * 3; i++)
         {
             PixelBuffer[i] = floor(unormalized_buffer[i] * 255);
         }
@@ -243,7 +245,7 @@ void raycasting()
     cout << "[SCENE] Rendered in " << setprecision(2);
     cout << elapsed_seconds.count() << "s\n";
 
-    glDrawPixels(resolution, resolution, GL_RGB, GL_UNSIGNED_BYTE, PixelBuffer);
+    glDrawPixels(w, h, GL_RGB, GL_UNSIGNED_BYTE, PixelBuffer);
     glFlush();
 }
 
@@ -314,7 +316,12 @@ int main(int argc, char **argv)
             new Triangle(roof4, roof2, roof5, roof_material),
             new Triangle(roof3, roof4, roof5, roof_material)});
 
+    Object *another_house = house->clone("another house");
+
     house->translate(Vector(30, 0, 5));
+    house->rotate(M_PI / 8, Vector(0, 1, 0));
+    another_house->translate(Vector(55, 0, 5));
+    another_house->rotate(M_PI / 4, Vector(0, 1, 0));
 
     //lamppost
     Object *lamppost = new Object(
@@ -350,16 +357,16 @@ int main(int argc, char **argv)
     objects.push_back(sidewalk);
     objects.push_back(road);
     objects.push_back(house);
+    objects.push_back(another_house);
     objects.push_back(lamppost);
     objects.push_back(tree);
     objects.push_back(trashcan);
 
     //==========LIGHTS==========>
-    //light on the side of the house
-    Light *p_light = new Light(Color(0.3, 0.3, .3), Vector(45.1, 5.0, 7.5));
-    Light *r_light = new Light(Color(0.15, 0.15, 0.15), Vector(1, -1, 1), REMOTE);
-    Light *s_light = new Light(Color(0.4, 0.4, 0.4), Point(20, 9, 30), Vector(0, -1, 0), 0.0, M_PI / 4, 1.0);
 
+    Light *p_light = new Light(Color(0.25, 0.22, .18), Vector(45, 5.0, 7.5));
+    Light *r_light = new Light(Color(0.1, 0.1, 0.24), Vector(1, -1, 1), REMOTE);
+    Light *s_light = new Light(Color(0.5, 0.4, 0.4), Point(20, 9, 30), Vector(0, -1, 0), 0.0, M_PI / 4, 1.0);
     lights.push_back(p_light);
     lights.push_back(r_light);
     lights.push_back(s_light);
@@ -369,7 +376,7 @@ int main(int argc, char **argv)
 
     // Seting the window properties
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(resolution, resolution);
+    glutInitWindowSize(w, h);
     glutInitWindowPosition(0, 0);
 
     // Creating the OpenGL window
