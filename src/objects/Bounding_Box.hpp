@@ -18,7 +18,7 @@ public:
     Point get_ref();
     void bounds(Point &minb, Point &maxb);
     void set_bounds(Point &minb, Point &maxb);
-
+    void origin_translate(Matrix t_matrix);
     Vector surface_normal(Point &p_int) override;
     bool intersects(Ray &ray, double &t_int) override;
     void translate(Matrix t_matrix) override;

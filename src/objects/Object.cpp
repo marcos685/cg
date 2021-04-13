@@ -46,10 +46,10 @@ bool Object::trace(Ray &ray, Shape **shape_hit, double &t_int)
     double t_min = std::numeric_limits<double>::infinity();
     bool hit = false;
 
-    if (!visible_ || !bounding_box_.intersects(ray, t_int))
-    {
-        return hit;
-    }
+    // if (!visible_ || !bounding_box_.intersects(ray, t_int))
+    // {
+    //     return hit;
+    // }
 
     for (unsigned i = 0; i < mesh_.size(); i++)
     {
@@ -109,21 +109,23 @@ void Object::rotate(double angle, Vector axis)
 
     Matrix rotation_m;
     // omitted fields are set to 0 by default
-    rotation_m(0, 0) = vqx * vqx - vqy * vqy - vqz * vqz + wq * wq;
+    rotation_m(0, 0) = std::abs(vqx * vqx - vqy * vqy - vqz * vqz + wq * wq);
     rotation_m(0, 1) = 2 * vqx * vqy - 2 * vqz * wq;
     rotation_m(0, 2) = 2 * vqx * vqz + 2 * vqy * wq;
 
     rotation_m(1, 0) = 2 * vqz * vqy + 2 * vqz * wq;
-    rotation_m(1, 1) = -(vqx * vqx) + vqy * vqy - vqz * vqz + wq * wq;
+    rotation_m(1, 1) = std::abs(-(vqx * vqx) + vqy * vqy - vqz * vqz + wq * wq);
     rotation_m(1, 2) = 2 * vqy * vqz - 2 * vqx * wq;
 
     rotation_m(2, 0) = 2 * vqx * vqz - 2 * vqy * wq;
     rotation_m(2, 1) = 2 * vqy * vqz + 2 * vqx * wq;
-    rotation_m(2, 2) = -(vqx * vqx) - vqy * vqy + vqz * vqz + wq * wq;
+    rotation_m(2, 2) = std::abs(-(vqx * vqx) - vqy * vqy + vqz * vqz + wq * wq);
 
     rotation_m(3, 3) = 1;
 
-    bounding_box_.translate(to_origin);
+    std::cout << rotation_m;
+
+    bounding_box_.origin_translate(to_origin);
     for (unsigned i = 0; i < mesh_.size(); i++)
         mesh_[i]->translate(to_origin);
 
@@ -131,7 +133,7 @@ void Object::rotate(double angle, Vector axis)
     for (unsigned i = 0; i < mesh_.size(); i++)
         mesh_[i]->rotate(rotation_m);
 
-    bounding_box_.translate(from_origin);
+    bounding_box_.origin_translate(from_origin);
     for (unsigned i = 0; i < mesh_.size(); i++)
         mesh_[i]->translate(from_origin);
 }

@@ -1,4 +1,5 @@
 #include "Matrix.hpp"
+#include <iostream>
 
 Matrix::Matrix()
 {
@@ -68,19 +69,6 @@ Vector Matrix::operator*(Vector &v)
     return Vector(newx, newy, newz);
 }
 
-Quaternion Matrix::operator*(Quaternion &q)
-{
-    double ox, oy, oz;
-    double newx, newy, newz;
-    Vector *vec = q.get_vec();
-    (*vec).get_coordinates(&ox, &oy, &oz);
-    newx = m[0][0] * ox + m[0][1] * oy + m[0][2] * oz + m[0][3] * q.get_scalar();
-    newy = m[1][0] * ox + m[1][1] * oy + m[1][2] * oz + m[1][3] * q.get_scalar();
-    newz = m[2][0] * ox + m[2][1] * oy + m[2][2] * oz + m[2][3] * q.get_scalar();
-
-    return Quaternion(Vector(newx, newy, newz), q.get_scalar());
-}
-
 void Matrix::identity()
 {
     for (int i = 0; i < 4; i++)
@@ -133,4 +121,18 @@ Matrix Matrix::inverse()
     inv_mat(3, 3) = det * (m[0][0] * adj1212 - m[0][1] * adj0212 + m[0][2] * adj0112);
 
     return inv_mat;
+}
+
+std::ostream &operator<<(std::ostream &stream, Matrix &matrix)
+{
+    stream << "Matrix\n";
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            stream << matrix(i, j) << " ";
+        }
+        stream << "\n";
+    }
+    return stream;
 }

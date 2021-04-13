@@ -2,9 +2,10 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
+#include <iostream>
+
 #include "Point.hpp"
 #include "Vector.hpp"
-#include "Quaternion.hpp"
 
 class Matrix
 {
@@ -19,9 +20,9 @@ public:
     double &operator()(int i, int j);
     Point operator*(Point &p);
     Vector operator*(Vector &v);
-    Quaternion operator*(Quaternion &q);
     void identity();
     Matrix inverse();
+    friend std::ostream &operator<<(std::ostream &stream, Matrix &matrix);
 };
 
 #endif

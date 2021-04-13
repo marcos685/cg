@@ -30,6 +30,7 @@ public:
     Light(Color intensity, Vector position, LightType light_type = POINT);
     Light(double *Color, Vector position, LightType light_type = POINT);
     Light(double *Color, Point position, Vector lookat, double angle, double falloff_angle = 45, double focus = 1);
+    Light(Color color, Point position, Vector lookat, double angle, double falloff_angle = 45, double focus = 1);
     void set_intensity(Color new_intensity);
     void set_intensity(double *Color);
     void set_position(Vector position);

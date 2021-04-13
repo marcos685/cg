@@ -43,6 +43,18 @@ Light::Light(double *color, Point position, Vector lookat, double angle, double 
     active_ = true;
 }
 
+Light::Light(Color color, Point position, Vector lookat, double angle, double falloff_angle, double focus)
+{
+    intensity_= color;
+    position_ = lookat;
+    spot_pos = position;
+    spot_angle = angle;
+    spot_falloff = falloff_angle;
+    spot_focus = focus;
+    l_type = SPOT;
+    active_ = true;
+}
+
 void Light::set_intensity(Color intensity)
 {
     intensity_ = intensity;

@@ -134,5 +134,14 @@ void Cone::rotate(Matrix t_matrix)
 
 void Cone::scale(Matrix t_matrix)
 {
-    scale_aux = t_matrix * scale_aux;
+    c_ = t_matrix * c_;
+    height_ = t_matrix(0, 0) * height_;
+    radius_ = t_matrix(0, 0) * radius_;
+    double ox, oy, oz, vx, vy, vz;
+    c_.get_coordinates(&ox, &oy, &oz);
+    n_.get_coordinates(&vx, &vy, &vz);
+    ox += vx * height_;
+    oy += vy * height_;
+    oz += vz * height_;
+    vertice_ = Point(ox, oy, oz);
 }

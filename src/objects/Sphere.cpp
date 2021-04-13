@@ -28,8 +28,8 @@ void Sphere::set_params(Point *center, double *radius)
 Vector Sphere::surface_normal(Point &p_int)
 {
     Vector normal = Vector(&center_, &p_int);
-    normal.normalize();
     normal = normal / radius_;
+    normal.normalize();
     return normal;
 }
 
@@ -57,7 +57,8 @@ void Sphere::translate(Matrix t_matrix)
 
 void Sphere::scale(Matrix t_matrix)
 {
-    radius_ *= t_matrix(0, 0);
+    center_ = t_matrix * center_;
+    radius_ = t_matrix(0, 0) * radius_;
 }
 
 void Sphere::rotate(Matrix t_matrix)

@@ -16,6 +16,7 @@ private:
 public:
     Shape();
     Shape(Material *material);
+    Shape(Material *material, char *name);
     Material *get_material();
     const char *name;
     Vector light_direction(Light *light, Point &intersection);

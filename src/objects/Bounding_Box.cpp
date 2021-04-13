@@ -4,7 +4,7 @@
 
 using std::swap;
 
-Bounding_Box::Bounding_Box() : Shape(new Material(Color(0.5, 0.5, 0.5), Color(), Color()))
+Bounding_Box::Bounding_Box() : Shape(new Material(Color(), Color(), Color()))
 {
     this->min_bound = Point(-0.5, -0.5, -0.5);
     this->max_bound = Point(0.5, 0.5, 0.5);
@@ -84,6 +84,12 @@ bool Bounding_Box::intersects(Ray &ray, double &t_int)
     return true;
 }
 
+void Bounding_Box::origin_translate(Matrix t_matrix)
+{
+    modelmatrix = t_matrix * modelmatrix;
+    invmatrix = modelmatrix.inverse();
+}
+
 void Bounding_Box::translate(Matrix t_matrix)
 {
     min_bound = t_matrix * min_bound;
@@ -91,10 +97,10 @@ void Bounding_Box::translate(Matrix t_matrix)
 }
 void Bounding_Box::rotate(Matrix t_matrix)
 {
-    min_bound = t_matrix * min_bound;
-    max_bound = t_matrix * max_bound;
+    modelmatrix = t_matrix * modelmatrix;
 }
 void Bounding_Box::scale(Matrix t_matrix)
 {
-    modelmatrix = t_matrix * modelmatrix;
+    min_bound = t_matrix * min_bound;
+    max_bound = t_matrix * max_bound;
 }

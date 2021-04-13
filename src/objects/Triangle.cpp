@@ -10,7 +10,7 @@ Triangle::Triangle() : Shape()
     vertex1 = Point(-1, 0, 0);
     vertex2 = Point(0, 1, 0);
 }
-Triangle::Triangle(Point vertex0, Point vertex1, Point vertex2, Material *material) : Shape(material)
+Triangle::Triangle(Point vertex0, Point vertex1, Point vertex2, Material *material) : Shape(material, "triangle")
 {
     this->vertex0 = vertex0;
     this->vertex1 = vertex1;
@@ -82,7 +82,7 @@ bool Triangle::intersects(Ray &ray, double &t_int)
         return false;
 
     t_int = f * edge2.dot_product(&q);
-    if (t_int < episilon)
+    if (t_int <= episilon)
         return false;
     return true;
 }

@@ -1,5 +1,6 @@
 #include "Shape.hpp"
 #include <cmath>
+#include <iostream>
 
 using std::pow;
 
@@ -13,6 +14,12 @@ Shape::Shape(Material *material)
 {
     this->material_ = material;
     this->name = "shape";
+};
+
+Shape::Shape(Material *material, char *name)
+{
+    this->material_ = material;
+    this->name = name;
 };
 
 Material *Shape::get_material() { return material_; }
@@ -47,6 +54,9 @@ Color Shape::calculate_diffuse(Light *light, Point &intersection)
     Color intensity = light->get_intensity(intersection);
     Vector normal = surface_normal(intersection);
     normal.normalize();
+    ld.normalize();
+
+    //std::cout << normal.get_x() << '|' << normal.get_y() << '|' << normal.get_z() << '\n';
 
     double fd = normal.dot_product(&ld);
     fd = fd < 0 ? 0 : fd;
